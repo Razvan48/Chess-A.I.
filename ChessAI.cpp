@@ -172,7 +172,7 @@ public:
 
     std::vector<Status> prevStatuses;
 
-    static const int ATTACK_MODULO = 6701; /// Cred ca am putea un modul si mai mic pentru functia de hash, ca sa economisim memorie.
+    static const int ATTACK_MODULO = 6701; /// Cred ca am putea un modul si mai mic pentru functia de hash, ca sa economisim RAM.
     static const int ATTACK_SIZE = 2 * ATTACK_MODULO;
 
     BitBoard knightAttackZone[64];
@@ -2748,16 +2748,13 @@ public:
 
     static const int PAWN_SCORE = 50;
     static const int ROOK_SCORE = 275;
-    static const int KNIGHT_SCORE = 190;
+    static const int KNIGHT_SCORE = 165;
     static const int BISHOP_SCORE = 215;
     static const int QUEEN_SCORE = 575;
     static const int KING_SCORE = 1000;
 
     static const int CAN_CASTLE_KING_SCORE = 30;
     static const int CASTLED_KING_SCORE = 50;
-    static const int STUPID_CASTLING = 75;
-
-    bool inEndGame = false;
 
     int whitePawnPositionScore[64] =
     {
@@ -2773,8 +2770,8 @@ public:
 
     int whiteRookPositionScore[64] =
     {
-        +10, +10, +10, +15, +15, +10, +10, +10,
-        +10, +15,  +5,  +5,  +5,  +5, +15, +10,
+        -10,  +0, +20, +15, +15, +20,  +0, -10,
+        -10, +15,  +5,  +5,  +5,  +5, +15, -10,
          -5,  +0,  +0,  +0,  +0,  +0,  +0,  -5,
          -5,  +0,  +0,  +0,  +0,  +0,  +0,  -5,
          -5,  +0,  +0,  +0,  +0,  +0,  +0,  -5,
@@ -2852,7 +2849,7 @@ public:
          -5,  +0,  +0,  +0,  +0,  +0,  +0,  -5,
          -5,  +0,  +0,  +0,  +0,  +0,  +0,  -5,
         -10, +15,  +5,  +5,  +5,  +5, +15, -10,
-        +10, +10, +10, +15, +15, +10, +10, +10,
+        -10,  +0, +20, +15, +15, +20,  +0, -10,
     };
 
     int blackKnightPositionScore[64] =
@@ -2973,105 +2970,6 @@ public:
             std::cout << "Black in check!" << '\n';
             return;
         }
-    }
-
-    bool isInEndGame()
-    {
-        int numWhitePieces = 0;
-        int numBlackPieces = 0;
-
-        BitBoard pieces;
-        BitBoard piece;
-
-        pieces = chess.whiteRook;
-        piece = pieces & ~(pieces - 1);
-
-        while (piece)
-        {
-            numWhitePieces++;
-
-            pieces &= ~piece;
-            piece = pieces & ~(pieces - 1);
-        }
-
-        pieces = chess.whiteBishop;
-        piece = pieces & ~(pieces - 1);
-
-        while (piece)
-        {
-            numWhitePieces++;
-
-            pieces &= ~piece;
-            piece = pieces & ~(pieces - 1);
-        }
-
-        pieces = chess.whiteKnight;
-        piece = pieces & ~(pieces - 1);
-
-        while (piece)
-        {
-            numWhitePieces++;
-
-            pieces &= ~piece;
-            piece = pieces & ~(pieces - 1);
-        }
-
-        pieces = chess.whiteQueen;
-        piece = pieces & ~(pieces - 1);
-
-        while (piece)
-        {
-            numWhitePieces++;
-
-            pieces &= ~piece;
-            piece = pieces & ~(pieces - 1);
-        }
-
-        pieces = chess.blackRook;
-        piece = pieces & ~(pieces - 1);
-
-        while (piece)
-        {
-            numBlackPieces++;
-
-            pieces &= ~piece;
-            piece = pieces & ~(pieces - 1);
-        }
-
-        pieces = chess.blackBishop;
-        piece = pieces & ~(pieces - 1);
-
-        while (piece)
-        {
-            numBlackPieces++;
-
-            pieces &= ~piece;
-            piece = pieces & ~(pieces - 1);
-        }
-
-        pieces = chess.blackKnight;
-        piece = pieces & ~(pieces - 1);
-
-        while (piece)
-        {
-            numBlackPieces++;
-
-            pieces &= ~piece;
-            piece = pieces & ~(pieces - 1);
-        }
-
-        pieces = chess.blackQueen;
-        piece = pieces & ~(pieces - 1);
-
-        while (piece)
-        {
-            numBlackPieces++;
-
-            pieces &= ~piece;
-            piece = pieces & ~(pieces - 1);
-        }
-
-        return numWhitePieces <= 2 || numBlackPieces <= 2;
     }
 
     inline bool isLegalWhiteMove(std::string& move)
@@ -3204,69 +3102,11 @@ public:
         if (playerID == WHITE)
         {
             if (chess.whiteKingCastled)
-            {
                 score -= CASTLED_KING_SCORE;
-
-                BitBoard pieces = chess.whiteKing;
-                BitBoard piece = pieces & ~(pieces - 1);
-
-                while (piece)
-                {
-                    int pos = chess.log2[piece % chess.LOG2_MODULO + chess.LOG2_MODULO];
-
-                    if (pos / 8 == 0)
-                    {
-                        if (pos % 8 == 0 && ((chess.whitePawn & (1ll << 8)) == 0ll || (chess.whitePawn & (1ll << 9)) == 0ll))
-                        {
-                            score += STUPID_CASTLING;
-                        }
-                        else if (pos % 8 == 7 && ((chess.whitePawn & (1ll << 14)) == 0ll || (chess.whitePawn & (1ll << 15)) == 0ll))
-                        {
-                            score += STUPID_CASTLING;
-                        }
-                        else if ((chess.whitePawn & (1ll << (pos % 8 - 1))) == 0ll || (chess.whitePawn & (1ll << (pos % 8))) == 0ll || (chess.whitePawn & (1ll << (pos % 8 + 1))) == 0ll)
-                        {
-                            score += STUPID_CASTLING;
-                        }
-                    }
-
-                    pieces &= ~piece;
-                    piece = pieces & ~(pieces - 1);
-                }
-            }
             else if (!chess.whiteKingMoved && (!chess.whiteLeftRookMoved || !chess.whiteRightRookMoved))
                 score -= CAN_CASTLE_KING_SCORE;
             if (chess.blackKingCastled)
-            {
                 score += CASTLED_KING_SCORE;
-
-                BitBoard pieces = chess.blackKing;
-                BitBoard piece = pieces & ~(pieces - 1);
-
-                while (piece)
-                {
-                    int pos = chess.log2[piece % chess.LOG2_MODULO + chess.LOG2_MODULO];
-
-                    if (pos / 8 == 7)
-                    {
-                        if (pos % 8 == 0 && ((chess.blackPawn & (1ll << 48)) == 0ll || (chess.blackPawn & (1ll << 49)) == 0ll))
-                        {
-                            score -= STUPID_CASTLING;
-                        }
-                        else if (pos % 8 == 7 && ((chess.blackPawn & (1ll << 54)) == 0ll || (chess.blackPawn & (1ll << 55)) == 0ll))
-                        {
-                            score -= STUPID_CASTLING;
-                        }
-                        else if ((chess.blackPawn & (1ll << (((pos / 8) - 1) * 8 + pos % 8 - 1))) == 0ll || (chess.blackPawn & (1ll << (((pos / 8) - 1) * 8 + pos % 8))) == 0ll || (chess.blackPawn & (1ll << (((pos / 8) - 1) * 8 + pos % 8 + 1))) == 0ll)
-                        {
-                            score -= STUPID_CASTLING;
-                        }
-                    }
-
-                    pieces &= ~piece;
-                    piece = pieces & ~(pieces - 1);
-                }
-            }
             else if (!chess.blackKingMoved && (!chess.blackLeftRookMoved || !chess.blackRightRookMoved))
                 score += CAN_CASTLE_KING_SCORE;
 
@@ -3278,10 +3118,7 @@ public:
                 int pos = chess.log2[piece % chess.LOG2_MODULO + chess.LOG2_MODULO];
 
                 score -= PAWN_SCORE;
-                if (this->inEndGame)
-                    score -= this->whitePawnPositionScore[pos] * 2;
-                else
-                    score -= this->whitePawnPositionScore[pos];
+                score -= this->whitePawnPositionScore[pos];
                 ///score -= this->pressureBoard[pos] * this->PAWN_PRESSURE_SCORE;
 
                 pieces &= ~piece;
@@ -3356,10 +3193,7 @@ public:
                 int pos = chess.log2[piece % chess.LOG2_MODULO + chess.LOG2_MODULO];
 
                 score -= KING_SCORE;
-                if (this->inEndGame)
-                    score -= this->whiteKingPositionScore[pos] * (-1);
-                else
-                    score -= this->whiteKingPositionScore[pos];
+                score -= this->whiteKingPositionScore[pos];
                 score -= this->pressureBoard[pos] * this->KING_PRESSURE_SCORE;
 
                 pieces &= ~piece;
@@ -3374,10 +3208,7 @@ public:
                 int pos = chess.log2[piece % chess.LOG2_MODULO + chess.LOG2_MODULO];
 
                 score += PAWN_SCORE;
-                if (this->inEndGame)
-                    score += this->blackPawnPositionScore[pos] * 10;
-                else
-                    score += this->blackPawnPositionScore[pos];
+                score += this->blackPawnPositionScore[pos];
                 ///score -= this->pressureBoard[pos] * this->PAWN_PRESSURE_SCORE;
 
                 pieces &= ~piece;
@@ -3452,10 +3283,7 @@ public:
                 int pos = chess.log2[piece % chess.LOG2_MODULO + chess.LOG2_MODULO];
 
                 score += KING_SCORE;
-                if (this->inEndGame)
-                    score += this->blackKingPositionScore[pos] * (-1);
-                else
-                    score += this->blackKingPositionScore[pos];
+                score += this->blackKingPositionScore[pos];
                 score -= this->pressureBoard[pos] * this->KING_PRESSURE_SCORE;
 
                 pieces &= ~piece;
@@ -3465,69 +3293,11 @@ public:
         else
         {
             if (chess.whiteKingCastled)
-            {
                 score += CASTLED_KING_SCORE;
-
-                BitBoard pieces = chess.whiteKing;
-                BitBoard piece = pieces & ~(pieces - 1);
-
-                while (piece)
-                {
-                    int pos = chess.log2[piece % chess.LOG2_MODULO + chess.LOG2_MODULO];
-
-                    if (pos / 8 == 0)
-                    {
-                        if (pos % 8 == 0 && ((chess.whitePawn & (1ll << 8)) == 0ll || (chess.whitePawn & (1ll << 9)) == 0ll))
-                        {
-                            score -= STUPID_CASTLING;
-                        }
-                        else if (pos % 8 == 7 && ((chess.whitePawn & (1ll << 14)) == 0ll || (chess.whitePawn & (1ll << 15)) == 0ll))
-                        {
-                            score -= STUPID_CASTLING;
-                        }
-                        else if ((chess.whitePawn & (1ll << (pos % 8 - 1))) == 0ll || (chess.whitePawn & (1ll << (pos % 8))) == 0ll || (chess.whitePawn & (1ll << (pos % 8 + 1))) == 0ll)
-                        {
-                            score -= STUPID_CASTLING;
-                        }
-                    }
-
-                    pieces &= ~piece;
-                    piece = pieces & ~(pieces - 1);
-                }
-            }
             else if (!chess.whiteKingMoved && (!chess.whiteLeftRookMoved || !chess.whiteRightRookMoved))
                 score += CAN_CASTLE_KING_SCORE;
             if (chess.blackKingCastled)
-            {
                 score -= CASTLED_KING_SCORE;
-
-                BitBoard pieces = chess.blackKing;
-                BitBoard piece = pieces & ~(pieces - 1);
-
-                while (piece)
-                {
-                    int pos = chess.log2[piece % chess.LOG2_MODULO + chess.LOG2_MODULO];
-
-                    if (pos / 8 == 7)
-                    {
-                        if (pos % 8 == 0 && ((chess.blackPawn & (1ll << 48)) == 0ll || (chess.blackPawn & (1ll << 49)) == 0ll))
-                        {
-                            score += STUPID_CASTLING;
-                        }
-                        else if (pos % 8 == 7 && ((chess.blackPawn & (1ll << 54)) == 0ll || (chess.blackPawn & (1ll << 55)) == 0ll))
-                        {
-                            score += STUPID_CASTLING;
-                        }
-                        else if ((chess.blackPawn & (1ll << (((pos / 8) - 1) * 8 + pos % 8 - 1))) == 0ll || (chess.blackPawn & (1ll << (((pos / 8) - 1) * 8 + pos % 8))) == 0ll || (chess.blackPawn & (1ll << (((pos / 8) - 1) * 8 + pos % 8 + 1))) == 0ll)
-                        {
-                            score += STUPID_CASTLING;
-                        }
-                    }
-
-                    pieces &= ~piece;
-                    piece = pieces & ~(pieces - 1);
-                }
-            }
             else if (!chess.blackKingMoved && (!chess.blackLeftRookMoved || !chess.blackRightRookMoved))
                 score -= CAN_CASTLE_KING_SCORE;
 
@@ -3539,10 +3309,7 @@ public:
                 int pos = chess.log2[piece % chess.LOG2_MODULO + chess.LOG2_MODULO];
 
                 score += PAWN_SCORE;
-                if (this->inEndGame)
-                    score += this->whitePawnPositionScore[pos] * 2;
-                else
-                    score += this->whitePawnPositionScore[pos];
+                score += this->whitePawnPositionScore[pos];
                 ///score += this->pressureBoard[pos] * this->PAWN_PRESSURE_SCORE;
 
                 pieces &= ~piece;
@@ -3617,10 +3384,7 @@ public:
                 int pos = chess.log2[piece % chess.LOG2_MODULO + chess.LOG2_MODULO];
 
                 score += KING_SCORE;
-                if (this->inEndGame)
-                    score += this->whiteKingPositionScore[pos] * (-1);
-                else
-                    score += this->whiteKingPositionScore[pos];
+                score += this->whiteKingPositionScore[pos];
                 score += this->pressureBoard[pos] * this->KING_PRESSURE_SCORE;
 
                 pieces &= ~piece;
@@ -3635,10 +3399,7 @@ public:
                 int pos = chess.log2[piece % chess.LOG2_MODULO + chess.LOG2_MODULO];
 
                 score -= PAWN_SCORE;
-                if (this->inEndGame)
-                    score -= this->blackPawnPositionScore[pos] * 10;
-                else
-                    score -= this->blackPawnPositionScore[pos];
+                score -= this->blackPawnPositionScore[pos];
                 ///score += this->pressureBoard[pos] * this->PAWN_PRESSURE_SCORE;
 
                 pieces &= ~piece;
@@ -3713,10 +3474,7 @@ public:
                 int pos = chess.log2[piece % chess.LOG2_MODULO + chess.LOG2_MODULO];
 
                 score -= KING_SCORE;
-                if (this->inEndGame)
-                    score -= this->blackKingPositionScore[pos] * (-1);
-                else
-                    score -= this->blackKingPositionScore[pos];
+                score -= this->blackKingPositionScore[pos];
                 score += this->pressureBoard[pos] * this->KING_PRESSURE_SCORE;
 
                 pieces &= ~piece;
@@ -4037,13 +3795,13 @@ public:
                 {
                     chess.positionFreq[positionFEN]--;
                     chess.positionScore[positionFENDepth] = std::make_pair(+REACHABLE_INF, "");
-                    return std::make_pair(+REACHABLE_INF + depth, "");
+                    return std::make_pair(+REACHABLE_INF, "");
                 }
                 else
                 {
                     chess.positionFreq[positionFEN]--;
                     chess.positionScore[positionFENDepth] = std::make_pair(-REACHABLE_INF, "");
-                    return std::make_pair(-REACHABLE_INF - depth, "");
+                    return std::make_pair(-REACHABLE_INF, "");
                 }
             }
         }
@@ -4310,11 +4068,6 @@ public:
                     chess.doBlackMove(move);
 
                 lastMove = move;
-
-                if (this->numNodes <= 2000)
-                    this->MAX_SEARCH_DEPTH++;
-                if (this->numNodes >= 90000)
-                    this->MAX_SEARCH_DEPTH--;
                 */
             }
             else
@@ -4331,11 +4084,6 @@ public:
                     chess.doBlackMove(move);
 
                 lastMove = move;
-
-                if (this->numNodes <= 2000)
-                    this->MAX_SEARCH_DEPTH++;
-                if (this->numNodes >= 90000)
-                    this->MAX_SEARCH_DEPTH--;
 
                 /*
                 std::string move;
@@ -4384,11 +4132,6 @@ public:
 
             std::cout << "Number of nodes searched: " << '\n';
             std::cout << this->numNodes << '\n';
-
-            std::cout << "Current search depth: " << '\n';
-            std::cout << this->MAX_SEARCH_DEPTH << '\n';
-
-            this->inEndGame = isInEndGame();
 
             positionString(positionFEN, currentID);
             chess.positionFreq[positionFEN]++;
