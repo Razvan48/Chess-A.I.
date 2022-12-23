@@ -5,6 +5,10 @@
 &emsp; It uses bitboards for faster moves generation. <br/>
 &emsp; A lot of logical operations and instructions were used. <br/>
 
+<p align = "center">
+  <img width="400" height="533" src="https://github.com/Razvan48/Chess-A.I./blob/main/Demo/ChessAIDemo.gif">
+</p>
+
 **How to use the program:**
 
 &emsp; First, the program asks what color the player and the A.I. will be. It will also ask for the maximum depth of the move search. It is recommended to choose a search depth of 4 or 5 (5 still takes 15 seconds for each move on my computer). <br/>
