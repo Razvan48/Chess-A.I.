@@ -24,7 +24,7 @@ For example, for a white rook from e2 to e4, we will type "Re2e4" and then press
 
 <br/>
 
-&emsp; Pieces IDS: <br/>
+&emsp; Pieces IDs: <br/>
 
 <br/>
  
