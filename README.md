@@ -6,7 +6,7 @@
 &emsp; A lot of logical operations and instructions were used. <br/>
 
 <p align = "center">
-  <img width="700" height="500" src="https://github.com/Razvan48/Chess-A.I./blob/main/Demo/ChessAIDemo.gif">
+  <img width="1000" height="500" src="https://github.com/Razvan48/Chess-A.I./blob/main/Demo/ChessAIDemo.gif">
 </p>
 
 **How to use the program:**
