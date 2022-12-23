@@ -7,34 +7,56 @@
 
 **How to use the program:**
 
-First, the program asks what color the player and the A.I. will be. It will also ask for the maximum depth of the move search. It is recommended to choose a search depth of 4 or 5 (5 still takes 15 seconds for each move on my computer).
+First, the program asks what color the player and the A.I. will be. It will also ask for the maximum depth of the move search. It is recommended to choose a search depth of 4 or 5 (5 still takes 15 seconds for each move on my computer). <br/>
 
-When the application is running, the font size in the executable must be set to 8, otherwise the board will be too large for the executable screen.
+<br/>
 
-To perform a move, type the id of piece to be moved, its start position and its end position.
-For example, for a white rook from e2 to e4, we will type "Re2e4" and then press enter. For a black queen from 7f to 8f, we will type "q7f8f" and press enter.
+When the application is running, the font size in the executable must be set to 8, otherwise the board will be too large for the executable screen. <br/>
 
-Pieces IDS:
+<br/>
+
+To perform a move, type the id of piece to be moved, its start position and its end position. <br/>
+For example, for a white rook from e2 to e4, we will type "Re2e4" and then press enter. For a black queen from 7f to 8f, we will type "q7f8f" and press enter. <br/>
+
+<br/>
+
+Pieces IDS: <br/>
+
+<br/>
  
-P / p = white / black pawn;
-R / r = white / black rook;
-N / n = white / black knight;
-B / b = white / black bishop;
-Q / q = white / black queen;
-K / k = white / black king;
+P / p = white / black pawn; <br/>
+R / r = white / black rook; <br/>
+N / n = white / black knight; <br/>
+B / b = white / black bishop; <br/>
+Q / q = white / black queen; <br/>
+K / k = white / black king; <br/>
 
-This is how most moves work. There are only a few exceptions:
+<br/>
 
-If we make an en passant, then a "+" must be typed after the usual 5 characters.
-If we promote a pawn, then we also type r / n / b / q for black and R / N / B / Q for white, to specify what the respective pawn turns into.
+This is how most moves work. There are only a few exceptions: <br/>
 
-The program stops itself if there is a draw or checkmate for someone.
+<br/>
 
-The player can set from which perspective to see the pieces: from that of white (white down) or black (black down).
+If we make an en passant, then a "+" must be typed after the usual 5 characters. <br/>
+If we promote a pawn, then we also type r / n / b / q for black and R / N / B / Q for white, to specify what the respective pawn turns into. <br/>
 
-The application interface communicates with the player, since it tells him at any moment whose turn it is, if someone is in chess, if there is a draw or if there is a checkmate for someone.
+<br/>
 
-The code can be easily modified to allow playing Chess between 2 people, not between the person and the A.I..
+The program stops itself if there is a draw or checkmate for someone. <br/>
+
+<br/>
+
+The player can set from which perspective to see the pieces: from that of white (white down) or black (black down). <br/>
+
+<br/>
+
+The application interface communicates with the player, since it tells him at any moment whose turn it is, if someone is in chess, if there is a draw or if there is a checkmate for someone. <br/>
+
+<br/>
+
+The code can be easily modified to allow playing Chess between 2 people, not between the person and the A.I.. <br/>
+
+<br/>
 
 
 
