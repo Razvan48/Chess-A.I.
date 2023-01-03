@@ -28,12 +28,12 @@ For example, for a white rook from e2 to e4, we will type "Re2e4" and then press
 
 <br/>
  
-&emsp; &emsp; &emsp; - P / p = white / black pawn <br/>
-&emsp; &emsp; &emsp; - R / r = white / black rook <br/>
-&emsp; &emsp; &emsp; - N / n = white / black knight <br/>
-&emsp; &emsp; &emsp; - B / b = white / black bishop <br/>
-&emsp; &emsp; &emsp; - Q / q = white / black queen <br/>
-&emsp; &emsp; &emsp; - K / k = white / black king <br/>
+- P / p = white / black pawn <br/>
+- R / r = white / black rook <br/>
+- N / n = white / black knight <br/>
+- B / b = white / black bishop <br/>
+- Q / q = white / black queen <br/>
+- K / k = white / black king <br/>
 
 <br/>
 
